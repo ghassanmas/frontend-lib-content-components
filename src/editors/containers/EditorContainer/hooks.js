@@ -25,7 +25,7 @@ export const handleSaveClicked = ({
   validateEntry,
   returnFunction,
 }) => {
-  const destination = useSelector(selectors.app.returnUrl);
+  const destination = returnFunction ? '' : useSelector(selectors.app.returnUrl);
   const analytics = useSelector(selectors.app.analytics);
 
   return () => saveBlock({
@@ -53,7 +53,7 @@ export const handleCancel = ({ onClose, returnFunction }) => {
   }
   return navigateCallback({
     returnFunction,
-    destination: useSelector(selectors.app.returnUrl),
+    destination: returnFunction ? '' : useSelector(selectors.app.returnUrl),
     analyticsEvent: analyticsEvt.editorCancelClick,
     analytics: useSelector(selectors.app.analytics),
   });

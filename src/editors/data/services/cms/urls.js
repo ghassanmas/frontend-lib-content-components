@@ -7,26 +7,34 @@ export const unit = ({ studioEndpointUrl, unitUrl }) => (
 );
 
 export const returnUrl = ({ studioEndpointUrl, unitUrl, learningContextId }) => {
-  if (learningContextId && learningContextId.includes('library-v1')) {
+  if (learningContextId && learningContextId.startsWith('library-v1')) {
     // when the learning context is a v1 library, return to the library page
     return libraryV1({ studioEndpointUrl, learningContextId });
+  }
+  if (learningContextId && learningContextId.startsWith('lib')) {
+    // when it's a v2 library, there will be no return url (instead a closed popup)
+    return '';
   }
   // when the learning context is a course, return to the unit page
   return unitUrl ? unit({ studioEndpointUrl, unitUrl }) : '';
 };
 
 export const block = ({ studioEndpointUrl, blockId }) => (
-  blockId.includes('block-v1')
+  blockId.startsWith('block-v1')
     ? `${studioEndpointUrl}/xblock/${blockId}`
-    : `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}`
+    : `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}/fields/`
 );
 
 export const blockAncestor = ({ studioEndpointUrl, blockId }) => (
-  `${block({ studioEndpointUrl, blockId })}?fields=ancestorInfo`
+  blockId.startsWith('block-v1')
+    ? `${block({ studioEndpointUrl, blockId })}?fields=ancestorInfo`
+    : `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}/?include=ancestorInfo`
 );
 
 export const blockStudioView = ({ studioEndpointUrl, blockId }) => (
-  `${block({ studioEndpointUrl, blockId })}/studio_view`
+  blockId.startsWith('block-v1')
+    ? `${block({ studioEndpointUrl, blockId })}/studio_view`
+    : `${studioEndpointUrl}/api/xblock/v2/xblocks/${blockId}/view/studio_view/`
 );
 
 export const courseAssets = ({ studioEndpointUrl, learningContextId }) => (

@@ -26,6 +26,7 @@ describe('cms url methods', () => {
   const learningContextId = 'lEarnIngCOntextId123';
   const courseId = 'course-v1:courseId123';
   const libraryV1Id = 'library-v1:libaryId123';
+  const libraryV2Id = 'lib:libaryId123';
   const language = 'la';
   const handout = '/aSSet@hANdoUt';
   const videoId = '123-SOmeVidEOid-213';
@@ -41,9 +42,13 @@ describe('cms url methods', () => {
         ],
       },
     };
-    it('returns the library page when given the library', () => {
+    it('returns the library page when given the v1 library', () => {
       expect(returnUrl({ studioEndpointUrl, unitUrl, learningContextId: libraryV1Id }))
         .toEqual(`${studioEndpointUrl}/library/${libraryV1Id}`);
+    });
+    it('returns empty string when given the v2 library', () => {
+      expect(returnUrl({ studioEndpointUrl, unitUrl, learningContextId: libraryV2Id }))
+        .toEqual('');
     });
     it('returns url with studioEndpointUrl and unitUrl', () => {
       expect(returnUrl({ studioEndpointUrl, unitUrl, learningContextId: courseId }))
@@ -69,7 +74,7 @@ describe('cms url methods', () => {
     });
     it('returns v2 url with studioEndpointUrl and v2BlockId', () => {
       expect(block({ studioEndpointUrl, blockId: v2BlockId }))
-        .toEqual(`${studioEndpointUrl}/api/xblock/v2/xblocks/${v2BlockId}`);
+        .toEqual(`${studioEndpointUrl}/api/xblock/v2/xblocks/${v2BlockId}/fields/`);
     });
   });
   describe('blockAncestor', () => {
@@ -77,11 +82,19 @@ describe('cms url methods', () => {
       expect(blockAncestor({ studioEndpointUrl, blockId }))
         .toEqual(`${block({ studioEndpointUrl, blockId })}?fields=ancestorInfo`);
     });
+    it('returns v2 url with studioEndpointUrl, blockId and ancestor query', () => {
+      expect(blockAncestor({ studioEndpointUrl, blockId: v2BlockId }))
+        .toEqual(`${studioEndpointUrl}/api/xblock/v2/xblocks/${v2BlockId}/?include=ancestorInfo`);
+    });
   });
   describe('blockStudioView', () => {
-    it('returns url with studioEndpointUrl, blockId and studio_view query', () => {
+    it('returns v1 url with studioEndpointUrl, blockId and studio_view query', () => {
       expect(blockStudioView({ studioEndpointUrl, blockId }))
         .toEqual(`${block({ studioEndpointUrl, blockId })}/studio_view`);
+    });
+    it('returns v2 url with studioEndpointUrl, v2 blockId and studio_view query', () => {
+      expect(blockStudioView({ studioEndpointUrl, blockId: v2BlockId }))
+        .toEqual(`${studioEndpointUrl}/api/xblock/v2/xblocks/${v2BlockId}/view/studio_view/`);
     });
   });
 
